@@ -40,3 +40,25 @@
 接下来的任务就是将该类MPC模型问题转换一个二次优化模型，通过最小化下方的代价函数，求得一个最优的输入值，也就是地面反力值，
 
 这个公式着重于轨迹之间的差值，并附有Q和R这些权重矩阵。通过把x这些非输入项进行替换，我们就得到了右边这个标准二次型求解问题，其中H和R都可以用上述这些A~qp~和B~qp~矩阵来表示。然后我们可以通过C++库中的二次规划求解器解出我们期望的地面反力。![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%875.png)
+
+以下是GIF演示：
+
+没有MPC，只有位置控制：
+
+![](https://github.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/blob/main/GIF/Compressed%20GIF/No_MPC%2000_00_00-00_00_30.gif?raw=true)
+
+MPC第一代：
+
+![](https://github.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/blob/main/GIF/Compressed%20GIF/have_MPC%2000_00_00-00_00_30.gif?raw=true)
+
+MPC第一代在崎岖路面(dH = random(0,0.05))：
+
+![](https://github.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/blob/main/GIF/Compressed%20GIF/H=0.05%2000_00_00-00_00_30.gif?raw=true)
+
+MPC第二代：
+
+![](https://github.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/blob/main/GIF/Compressed%20GIF/Have_better_MPC%2000_00_00-00_00_30.gif?raw=true)
+
+MPC第二代在崎岖路面(dH = random(0,0.01)) 效果并不理想：
+
+![](https://github.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/blob/main/GIF/Compressed%20GIF/Have_better_MPC_H=0.01%2000_00_00-00_00_30.gif?raw=true)
