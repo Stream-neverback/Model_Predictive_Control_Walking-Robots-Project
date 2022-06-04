@@ -33,6 +33,10 @@
 
 ![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%873.png)
 
+然后就是MPC的设计，我们目前已经将f~k~当做成一个输入量，所以说我们的设计目标就是通过一个合适的输入量，来达到一个可靠最优的轨迹跟踪的效果，这跟大家所熟悉的LQR控制非常的类似，事实上，相比于LQR系统，MPC控制也只是多了一个给定HORIZON的预测部分，通过不断的对AB矩阵的计算和迭代，我们得到一个全新的线性模型，我们可以将这个矩阵写作A~qp~，另外一个矩阵写作B~qp~
+
 ![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%874.png)
 
-![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%875.png)
+接下来的任务就是将该类MPC模型问题转换一个二次优化模型，通过最小化下方的代价函数，求得一个最优的输入值，也就是地面反力值，
+
+这个公式着重于轨迹之间的差值，并附有Q和R这些权重矩阵。通过把x这些非输入项进行替换，我们就得到了右边这个标准二次型求解问题，其中H和R都可以用上述这些A~qp~和B~qp~矩阵来表示。然后我们可以通过C++库中的二次规划求解器解出我们期望的地面反力。![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%875.png)
