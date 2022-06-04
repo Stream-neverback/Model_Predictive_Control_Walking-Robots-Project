@@ -1,7 +1,7 @@
 # Model_Predictive_Control_Walking-Robots-Project
  Final Project
 
-![image-20220604211107663](E:\Github repositories\Model_Predictive_Control_Walking-Robots-Project\Pic\image-20220604211107663.png)
+![image-20220604211107663](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/image-20220604211107663.png)
 
 相比于传统的基于多刚体系统建立各运动关节的高频反馈控制的动力学模型
 
@@ -9,4 +9,30 @@
 
 对于摆动相，则通过轨迹的设计和状态机的调整，基于PD控制和前馈控制实现位置控制
 
-下面，着重介绍一下MPC控制模块在我们本次项目中所需要的理论
+![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%871.png)
+
+下面，着重介绍一下MPC控制模块在我们本次项目中所需要的理论（图片均为项目内PDF截图）：
+
+首先是描述机器人状态的主要变量的选取。对于机器人自身运动状态的描述，姿态以及位置层面，是使用欧拉角（roll ,pitch,yaw）和质心位置(x,y,z)来描述，同时为了描述其运动信息层面，加入角速度以及机器人质心的运动速度。因此，在机器人状态描述层面，共有姿态角、质心位置、姿态角角速度、质心速度共12个量描述
+
+首先是关于质心加速度的牛顿公式
+
+对于任何踩在地上的足式动物或者是足式机器人，他们所受到的外力无非是重力和地面反力，通过对该整体进行受力分析，我们得到了加速度，即位置的二阶导数的等式
+
+对于欧拉角的旋转矩阵，我们可以通过z轴旋转yaw的角度，再通过当前坐标系的y轴旋转pitch的角度，再通过当前坐标系的x轴旋转roll的角度，从而得到欧拉角的 旋转矩阵，对于yaw来说，roll和pitch属于小量，他们进行近似，从而得到只有z轴旋转矩阵的表达关系，同时，对于欧拉角的角速度，我们可以通过将角速度进行xyz轴的分解，通过将轴上分解角速度进行坐标系上的变换即可得到欧拉角速度和角速度之间的关系。
+
+下面是欧拉公式的近似转换和空间惯量的张量在坐标系下的变换，我们通过公式，建立了转动惯量与角速度的导数和地面反力产生的力矩的数学关系，并以此推导出角加速度，同时，在这个公式中，由于角速度作为小量是可以被忽略，并且如果角速度这一项被添加，可能会导致求解的发散
+
+同时，我们还要将各个坐标系下的转动惯量转换为世界坐标系下的惯量。
+
+![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%872.png)
+
+接下来便是状态空间模型的搭建，我们将刚刚所讲的运动学和动力学公式进行整理，并将其离散化，就得到了A~k~和B~k~的矩阵。并且还有一点值得一提，为了后续的计算简便，我们将重力加速度也并入了状态量，使得状态量从12维变成15维，同时Ak也变成一个15*15的矩阵
+
+并且这里的离散化在代码实现上也很有讲究，不同于原本的A+I*dt，我们选择将A进行指数化，即exp(A)
+
+![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%873.png)
+
+![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%874.png)
+
+![](https://raw.githubusercontent.com/Stream-neverback/Model_Predictive_Control_Walking-Robots-Project/main/Pic/%E5%9B%BE%E7%89%875.png)
